@@ -4,20 +4,6 @@ import pandas as pd
 
 # Load the trained model
 model = joblib.load("model.pkl")
-import joblib
-import os
-
-# Get the absolute path of the model file
-model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
-
-# Check if the file exists before loading
-if os.path.exists(model_path):
-    model = joblib.load(model_path)
-    print("✅ Model loaded successfully!")
-else:
-    raise FileNotFoundError(f"❌ Model file not found at: {model_path}")
-
-import joblib
 
 # Streamlit UI
 st.title("Machine Learning Model Predictor")

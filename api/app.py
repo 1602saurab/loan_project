@@ -17,7 +17,7 @@ if os.path.exists(model_path):
 else:
     raise FileNotFoundError(f"❌ Model file not found at: {model_path}")
 
-
+import joblib
 
 # Streamlit UI
 st.title("Machine Learning Model Predictor")

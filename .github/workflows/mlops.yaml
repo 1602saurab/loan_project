@@ -1,0 +1,24 @@
+name: MLOps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train Model
+        run: python src/train.py
+      
+    #   - name: Deploy to AWS
+    #     run: |
+    #       aws s3 cp models/model.pkl s3://mlops-loan-default/models/
+    #       aws lambda update-function-code --function-name loan-prediction --zip-file fileb://lambda.zip

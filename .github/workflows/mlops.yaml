@@ -11,14 +11,53 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      
+
+      - name: Set Up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint Code
+        run: pylint src/*.py api/*.py --disable=R,C
+
+      - name: Run Tests
+        run: pytest tests/
+
+  train:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set Up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
       - name: Train Model
         run: python src/train.py
-      
-    #   - name: Deploy to AWS
-    #     run: |
-    #       aws s3 cp models/model.pkl s3://mlops-loan-default/models/
-    #       aws lambda update-function-code --function-name loan-prediction --zip-file fileb://lambda.zip
+
+  deploy:
+    needs: train
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set Up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Start API Server
+        run: streamlit run api/app.py

@@ -10,22 +10,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: ✅ Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: ✅ Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
-      - name: Install Dependencies
+      - name: ✅ Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Set Python Path
+      - name: ✅ Set Python Path
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
 
-      - name: Lint Code
+      - name: ✅ Lint Code
         run: pylint src/*.py api/*.py --disable=R,C
 
-      - name: Run Unit Tests
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Checkout Code
+        uses: actions/checkout@v2
+
+      - name: ✅ Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: ✅ Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: ✅ Run Unit Tests
         run: pytest tests/ --disable-warnings
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Checkout Code
+        uses: actions/checkout@v2
+
+      - name: ✅ Deploy Application
+        run: |
+          echo "🚀 Deploying application..."
+          # Add deployment script here (e.g., Docker, AWS, Heroku, etc.)

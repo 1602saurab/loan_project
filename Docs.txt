@@ -63,3 +63,14 @@ jobs:
 
 
 this is on server yaml file ------> 
+
+
+
+
+
+For Dockerfile --->>>>>
+
+docker build -t loan_default_app .
+docker run -p 8501:8501 loan_default_app
+docker login 
+docker push saurabhbrd/loan_default_app

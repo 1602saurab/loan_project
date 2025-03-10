@@ -1,20 +1,23 @@
-# Use a lightweight Python 3.8 image
-FROM python:3.8-slim
+# Use official Python image
+FROM python:3.9
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy only the requirements file first to leverage Docker caching
-COPY requirements.txt requirements.txt
+# Copy the requirements file
+COPY requirements.txt .
 
-# Install dependencies and clean up to reduce image size
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire application
+# Copy the entire project to the container
 COPY . .
 
-# Expose the Streamlit default port
+# Ensure model exists before running the app
+RUN python src/train.py
+
+# Expose Streamlit's default port
 EXPOSE 8501
 
-# Run the Streamlit app
+# Command to run the Streamlit app
 CMD ["streamlit", "run", "api/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

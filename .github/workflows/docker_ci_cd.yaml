@@ -31,10 +31,17 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/loan_default_app:latest
 
       - name: Deploy on AWS EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@your-ec2-public-ip <<EOF
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST <<EOF
             docker pull ${{ secrets.DOCKER_USERNAME }}/loan_default_app:latest
             docker stop loan_default_app || true
             docker rm loan_default_app || true
             docker run -d -p 8501:8501 --name loan_default_app ${{ secrets.DOCKER_USERNAME }}/loan_default_app:latest
           EOF
+          rm -f private_key.pem
